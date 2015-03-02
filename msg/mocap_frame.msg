@@ -1,0 +1,3 @@
+Header header
+int64 number
+geometry_msgs/PoseArray body_poses
