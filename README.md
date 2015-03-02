@@ -1,2 +1,0 @@
-# MLab_Mocap
-OptitrackMocapSystem
