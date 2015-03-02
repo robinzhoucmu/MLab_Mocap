@@ -40,8 +40,9 @@
 // ROS Includes
 //*************************
 #include <ros/ros.h>
-#include <../msg_gen/cpp/include/Mocap/mocap_frame.h>
-//#include <geometry_msgs/Point32.h>
+#include <Mocap/mocap_frame.h>
+#include <robot_comm/robot_comm.h>
+
 // Misc.
 //****************************
 #include <boost/program_options.hpp>
@@ -205,8 +206,6 @@ void publishToROS(FrameListener& frameListener, ros::Publisher pub) {
 void ExtractPoseMsg(const MocapFrame& mframe, Mocap::mocap_frame* msg) {
   const int num_bodies = mframe.rigidBodies().size();
   for (int i = 0; i < num_bodies; i++) {
-    /*for (std::vector<RigidBody>::iterator it_body = mframe.rigidBodies.begin(); 
-      it_body != mframe.rigidBodies.end(); ++it_body) {*/  
     const RigidBody& body = mframe.rigidBodies()[i];
     geometry_msgs::Pose pose;
     // Copy x,y,z.
@@ -218,7 +217,6 @@ void ExtractPoseMsg(const MocapFrame& mframe, Mocap::mocap_frame* msg) {
     pose.orientation.y = body.orientation().qy;
     pose.orientation.z = body.orientation().qz;
     pose.orientation.w = body.orientation().qw;
-
     msg->body_poses.poses.push_back(pose);
   }
 } 
@@ -276,14 +274,18 @@ int main(int argc, char* argv[])
    //   ROS
    //*****************************
    //*****************************
-   
-   // Parameters for message publishing.
-   const int kQueueSize = 100;
-   const int kPubFreqHz = 100; 
-
    // Initialize the ROS node
    ros::init(argc,argv, "Mocap");
    ros::NodeHandle nodeHandle;
+   
+    // Initialize the robot.
+   ros::NodeHandle node;
+   RobotComm robot = RobotComm(&nodeHandle);
+
+   // Parameters for message publishing.
+   const int kQueueSize = 100;
+   const int kPubFreqHz = 10; 
+
    ros::Publisher mocapPub = nodeHandle.advertise<Mocap::mocap_frame>("RigidBodies", kQueueSize);
    ros::Rate loop_rate(kPubFreqHz);
    unsigned int rosMsgCount = 0;
@@ -295,24 +297,26 @@ int main(int argc, char* argv[])
 
    
    while( ros::ok() && Globals::run) {
-     printf("In ROS publish loop \n");   		
-     
      // Try to get a new frame from the listener.
      bool valid;
      MocapFrame frame(frameListener.pop(&valid).first);
      // Quit if the listener has no more frames.
-     if(!valid) 
-     {
-       fprintf(stderr,"No valid frame available \n");
-       
+     if(!valid) {
+       fprintf(stderr,"No valid frame available \n");       
      }
-     else
-     {
-     	std::cout << frame << std::endl;
-     	// Extract rigid bodies and publish to ROS
-     	Mocap::mocap_frame msg;
-     	ExtractPoseMsg(frame, &msg);
-     	mocapPub.publish(msg);
+     else {
+       // double trans[3], quat[4];
+       // Vec trans;
+       // Quaternion quat;
+       HomogTransf h_trans;
+       robot.GetCartesian(h_trans);
+       std::cout << h_trans << std::endl;
+       std::cout << frame << std::endl;
+       // Extract rigid bodies and publish to ROS.
+       Mocap::mocap_frame msg;
+       ExtractPoseMsg(frame, &msg);
+       std::cout << ros::Time::now() << std::endl;
+       mocapPub.publish(msg);
      }
      ros::spinOnce();
      loop_rate.sleep();

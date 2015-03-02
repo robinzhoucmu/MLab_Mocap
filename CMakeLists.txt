@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.4.6)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+# include_directories(${PROJECT_SOURCE_DIR}/include)
+# Include NatNetLinux Driver.
 INCLUDE_DIRECTORIES( "./NatNetLinux-master/include" )
 OPTION( BUILD_EXAMPLES "If on, build executable examples." ON )
 IF( ${BUILD_EXAMPLES} )
