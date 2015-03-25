@@ -34,6 +34,9 @@ rosbuild_genmsg()
 rosbuild_add_boost_directories()
 rosbuild_add_executable(simpleexample src/SimpleExample.cpp)
 rosbuild_link_boost(simpleexample thread program_options system)
+
+rosbuild_add_executable(publisher src/SimpleExample.cpp)
+rosbuild_link_boost(publiser thread program_options system)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 

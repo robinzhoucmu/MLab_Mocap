@@ -70,6 +70,14 @@ void terminate(int)
    Globals::run = false;
 }
 
+/*
+void readForceData(const robot_comm::robot_ForceLogConstPtr msg)
+{
+  msg.fx ...
+}
+
+robot.subscribeForce(&readForceData)
+*/
 // Set the global addresses from the command line.
 void readOpts( int argc, char* argv[] )
 {
@@ -218,6 +226,9 @@ void ExtractPoseMsg(const MocapFrame& mframe, Mocap::mocap_frame* msg) {
     pose.orientation.z = body.orientation().qz;
     pose.orientation.w = body.orientation().qw;
     msg->body_poses.poses.push_back(pose);
+    
+    msg->header.stamp = ros::Time::now();
+    std::cout << "time: " <<  msg->header.stamp << std::endl;
   }
 } 
 
@@ -289,7 +300,6 @@ int main(int argc, char* argv[])
    ros::Publisher mocapPub = nodeHandle.advertise<Mocap::mocap_frame>("RigidBodies", kQueueSize);
    ros::Rate loop_rate(kPubFreqHz);
    unsigned int rosMsgCount = 0;
-
    //While the program is still active and ROS running, publish all available frames
    printf("before ROS loop: %i \n",ros::ok());
    
@@ -315,7 +325,7 @@ int main(int argc, char* argv[])
        // Extract rigid bodies and publish to ROS.
        Mocap::mocap_frame msg;
        ExtractPoseMsg(frame, &msg);
-       std::cout << ros::Time::now() << std::endl;
+       //std::cout << ros::Time::now() << std::endl;
        mocapPub.publish(msg);
      }
      ros::spinOnce();

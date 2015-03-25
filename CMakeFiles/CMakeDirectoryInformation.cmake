@@ -13,6 +13,10 @@ SET(CMAKE_C_INCLUDE_PATH
   "./NatNetLinux-master/include"
   "include"
   "/opt/ros/fuerte/include"
+  "/home/jiaji/hands/code/nodes/robot/ROS/robot_comm/include"
+  "/home/jiaji/hands/code/nodes/robot/ROS/robot_comm/msg_gen/cpp/include"
+  "/home/jiaji/hands/code/nodes/robot/ROS/robot_comm/srv_gen/cpp/include"
+  "/home/jiaji/hands/code/libraries/matVec/include"
   "msg_gen/cpp/include"
   )
 SET(CMAKE_CXX_INCLUDE_PATH ${CMAKE_C_INCLUDE_PATH})
