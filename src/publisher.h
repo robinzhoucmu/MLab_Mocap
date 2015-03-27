@@ -30,6 +30,7 @@
 #include <ros/ros.h>
 #include <Mocap/mocap_frame.h>
 #include <robot_comm/robot_comm.h>
+#include <Mocap/marker_set.h>
 
 // Misc.
 //****************************
@@ -87,19 +88,32 @@ class MocapPublisher {
  public:
   // Initialize ROS, socket stuffs and publish frequency(default).
   MocapPublisher(ros::NodeHandle *n);
+  
   void SetPublishFrequency(int pub_freq_hz);
   // Establish socket communication to the NatNet Windows Server.
+  
   void EstablishCommunications(int argc, char* argv[]);
   // Publish mocap frame in a loop.
-  void PublishLoop();
+  
+  void PublishToTopic();
+ 
  private:
+  // Create frame packet listener to listen to the server.
+  void CreateListener();
+
+  // Parse the NatNet MocapFrame data structure and store in a ros message.
+  void ExtractPoseMsg(const MocapFrame& mframe, Mocap::mocap_frame* msg);
+  
+  // Publishing frequency to the Mocap Topic.
   int pub_freq_hz;
+  
   // Socket stuffs.
   int sdCommand;
   int sdData;
-  CommandListener commandListener;
-  FrameListener frameListener;
-  void CreateListener();
+  CommandListener* commandListener;
+  FrameListener* frameListener;
+
   // Ros node.
   ros::NodeHandle *nodeHandle;
+
 };

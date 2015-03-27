@@ -174,6 +174,19 @@ clean-test-results/fast:
 .PHONY : clean-test-results/fast
 
 #=============================================================================
+# Target rules for targets named publisher
+
+# Build rule for target.
+publisher: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 publisher
+.PHONY : publisher
+
+# fast build rule for target.
+publisher/fast:
+	$(MAKE) -f CMakeFiles/publisher.dir/build.make CMakeFiles/publisher.dir/build
+.PHONY : publisher/fast
+
+#=============================================================================
 # Target rules for targets named rosbuild_precompile
 
 # Build rule for target.
@@ -252,19 +265,6 @@ rospack_gensrv/fast:
 .PHONY : rospack_gensrv/fast
 
 #=============================================================================
-# Target rules for targets named simpleexample
-
-# Build rule for target.
-simpleexample: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 simpleexample
-.PHONY : simpleexample
-
-# fast build rule for target.
-simpleexample/fast:
-	$(MAKE) -f CMakeFiles/simpleexample.dir/build.make CMakeFiles/simpleexample.dir/build
-.PHONY : simpleexample/fast
-
-#=============================================================================
 # Target rules for targets named test
 
 # Build rule for target.
@@ -330,19 +330,19 @@ tests/fast:
 .PHONY : tests/fast
 
 # target to build an object file
-src/SimpleExample.o:
-	$(MAKE) -f CMakeFiles/simpleexample.dir/build.make CMakeFiles/simpleexample.dir/src/SimpleExample.o
-.PHONY : src/SimpleExample.o
+src/publisher.o:
+	$(MAKE) -f CMakeFiles/publisher.dir/build.make CMakeFiles/publisher.dir/src/publisher.o
+.PHONY : src/publisher.o
 
 # target to preprocess a source file
-src/SimpleExample.i:
-	$(MAKE) -f CMakeFiles/simpleexample.dir/build.make CMakeFiles/simpleexample.dir/src/SimpleExample.i
-.PHONY : src/SimpleExample.i
+src/publisher.i:
+	$(MAKE) -f CMakeFiles/publisher.dir/build.make CMakeFiles/publisher.dir/src/publisher.i
+.PHONY : src/publisher.i
 
 # target to generate assembly for a file
-src/SimpleExample.s:
-	$(MAKE) -f CMakeFiles/simpleexample.dir/build.make CMakeFiles/simpleexample.dir/src/SimpleExample.s
-.PHONY : src/SimpleExample.s
+src/publisher.s:
+	$(MAKE) -f CMakeFiles/publisher.dir/build.make CMakeFiles/publisher.dir/src/publisher.s
+.PHONY : src/publisher.s
 
 # Help Target
 help:
@@ -357,6 +357,7 @@ help:
 	@echo "... ROSBUILD_gensrv_lisp"
 	@echo "... clean-test-results"
 	@echo "... edit_cache"
+	@echo "... publisher"
 	@echo "... rebuild_cache"
 	@echo "... rosbuild_precompile"
 	@echo "... rosbuild_premsgsrvgen"
@@ -364,15 +365,14 @@ help:
 	@echo "... rospack_genmsg_all"
 	@echo "... rospack_genmsg_libexe"
 	@echo "... rospack_gensrv"
-	@echo "... simpleexample"
 	@echo "... test"
 	@echo "... test-future"
 	@echo "... test-results"
 	@echo "... test-results-run"
 	@echo "... tests"
-	@echo "... src/SimpleExample.o"
-	@echo "... src/SimpleExample.i"
-	@echo "... src/SimpleExample.s"
+	@echo "... src/publisher.o"
+	@echo "... src/publisher.i"
+	@echo "... src/publisher.s"
 .PHONY : help
 
 

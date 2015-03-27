@@ -5,15 +5,20 @@ import genpy
 import struct
 
 import geometry_msgs.msg
+import Mocap.msg
 import std_msgs.msg
 
 class mocap_frame(genpy.Message):
-  _md5sum = "5f772ce0d0190e13627e97251cb17009"
+  _md5sum = "1a6d089936177be68712dd54f291892c"
   _type = "Mocap/mocap_frame"
   _has_header = True #flag to mark the presence of a Header object
   _full_text = """Header header
 int64 number
 geometry_msgs/PoseArray body_poses
+# Unidenfied markers. (E.g., the single marker used for calibration).	
+Mocap/marker_set uid_markers
+# The set of identified markers.
+Mocap/marker_set[] id_marker_sets
 ================================================================================
 MSG: std_msgs/Header
 # Standard metadata for higher-level stamped data types.
@@ -62,9 +67,12 @@ float64 y
 float64 z
 float64 w
 
+================================================================================
+MSG: Mocap/marker_set
+geometry_msgs/Point[] markers
 """
-  __slots__ = ['header','number','body_poses']
-  _slot_types = ['std_msgs/Header','int64','geometry_msgs/PoseArray']
+  __slots__ = ['header','number','body_poses','uid_markers','id_marker_sets']
+  _slot_types = ['std_msgs/Header','int64','geometry_msgs/PoseArray','Mocap/marker_set','Mocap/marker_set[]']
 
   def __init__(self, *args, **kwds):
     """
@@ -74,7 +82,7 @@ float64 w
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       header,number,body_poses
+       header,number,body_poses,uid_markers,id_marker_sets
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -89,10 +97,16 @@ float64 w
         self.number = 0
       if self.body_poses is None:
         self.body_poses = geometry_msgs.msg.PoseArray()
+      if self.uid_markers is None:
+        self.uid_markers = Mocap.msg.marker_set()
+      if self.id_marker_sets is None:
+        self.id_marker_sets = []
     else:
       self.header = std_msgs.msg.Header()
       self.number = 0
       self.body_poses = geometry_msgs.msg.PoseArray()
+      self.uid_markers = Mocap.msg.marker_set()
+      self.id_marker_sets = []
 
   def _get_types(self):
     """
@@ -131,6 +145,19 @@ float64 w
         _v2 = val1.orientation
         _x = _v2
         buff.write(_struct_4d.pack(_x.x, _x.y, _x.z, _x.w))
+      length = len(self.uid_markers.markers)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.uid_markers.markers:
+        _x = val1
+        buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
+      length = len(self.id_marker_sets)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.id_marker_sets:
+        length = len(val1.markers)
+        buff.write(_struct_I.pack(length))
+        for val2 in val1.markers:
+          _x = val2
+          buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -144,6 +171,10 @@ float64 w
         self.header = std_msgs.msg.Header()
       if self.body_poses is None:
         self.body_poses = geometry_msgs.msg.PoseArray()
+      if self.uid_markers is None:
+        self.uid_markers = Mocap.msg.marker_set()
+      if self.id_marker_sets is None:
+        self.id_marker_sets = None
       end = 0
       _x = self
       start = end
@@ -188,6 +219,35 @@ float64 w
         end += 32
         (_x.x, _x.y, _x.z, _x.w,) = _struct_4d.unpack(str[start:end])
         self.body_poses.poses.append(val1)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.uid_markers.markers = []
+      for i in range(0, length):
+        val1 = geometry_msgs.msg.Point()
+        _x = val1
+        start = end
+        end += 24
+        (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
+        self.uid_markers.markers.append(val1)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.id_marker_sets = []
+      for i in range(0, length):
+        val1 = Mocap.msg.marker_set()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        val1.markers = []
+        for i in range(0, length):
+          val2 = geometry_msgs.msg.Point()
+          _x = val2
+          start = end
+          end += 24
+          (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
+          val1.markers.append(val2)
+        self.id_marker_sets.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -225,6 +285,19 @@ float64 w
         _v6 = val1.orientation
         _x = _v6
         buff.write(_struct_4d.pack(_x.x, _x.y, _x.z, _x.w))
+      length = len(self.uid_markers.markers)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.uid_markers.markers:
+        _x = val1
+        buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
+      length = len(self.id_marker_sets)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.id_marker_sets:
+        length = len(val1.markers)
+        buff.write(_struct_I.pack(length))
+        for val2 in val1.markers:
+          _x = val2
+          buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -239,6 +312,10 @@ float64 w
         self.header = std_msgs.msg.Header()
       if self.body_poses is None:
         self.body_poses = geometry_msgs.msg.PoseArray()
+      if self.uid_markers is None:
+        self.uid_markers = Mocap.msg.marker_set()
+      if self.id_marker_sets is None:
+        self.id_marker_sets = None
       end = 0
       _x = self
       start = end
@@ -283,6 +360,35 @@ float64 w
         end += 32
         (_x.x, _x.y, _x.z, _x.w,) = _struct_4d.unpack(str[start:end])
         self.body_poses.poses.append(val1)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.uid_markers.markers = []
+      for i in range(0, length):
+        val1 = geometry_msgs.msg.Point()
+        _x = val1
+        start = end
+        end += 24
+        (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
+        self.uid_markers.markers.append(val1)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.id_marker_sets = []
+      for i in range(0, length):
+        val1 = Mocap.msg.marker_set()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        val1.markers = []
+        for i in range(0, length):
+          val2 = geometry_msgs.msg.Point()
+          _x = val2
+          start = end
+          end += 24
+          (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
+          val1.markers.append(val2)
+        self.id_marker_sets.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill

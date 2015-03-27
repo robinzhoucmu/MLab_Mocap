@@ -195,7 +195,7 @@ ROSPACK_EXE:FILEPATH=/opt/ros/fuerte/bin/rospack
 USERCONFIG:FILEPATH=USERCONFIG-NOTFOUND
 
 //Path to a file.
-_file_name:FILEPATH=/home/jiaji/TestNatNet/Mocap/src/SimpleExample.cpp
+_file_name:FILEPATH=/home/jiaji/TestNatNet/Mocap/src/publisher.cpp
 
 
 ########################
@@ -337,7 +337,7 @@ Mocap_temp:INTERNAL=
 //ADVANCED property for variable: PYTHON_EXECUTABLE
 PYTHON_EXECUTABLE-ADVANCED:INTERNAL=1
 _rosbuild_EXPORTS:INTERNAL=
-_rosbuild_cached_flag_time:INTERNAL=1425274358.48
+_rosbuild_cached_flag_time:INTERNAL=1427315519.08
 _roslang_LANGS:INTERNAL=roscpp;rospy;roslisp
 _rospack_deps_manifests_invoke_result:INTERNAL=/opt/ros/fuerte/share/std_msgs/manifest.xml;/opt/ros/fuerte/share/geometry_msgs/manifest.xml;/opt/ros/fuerte/share/roslang/manifest.xml;/opt/ros/fuerte/share/roscpp/manifest.xml;/opt/ros/fuerte/share/rospy/manifest.xml;/home/jiaji/hands/code/libraries/matVec/manifest.xml;/home/jiaji/hands/code/nodes/robot/ROS/robot_comm/manifest.xml
 _rospack_msgsrv_gen_invoke_result:INTERNAL=/home/jiaji/hands/code/nodes/robot/ROS/robot_comm/msg_gen/generated;/home/jiaji/hands/code/nodes/robot/ROS/robot_comm/srv_gen/generated

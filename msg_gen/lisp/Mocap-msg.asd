@@ -6,6 +6,8 @@
                :std_msgs-msg
 )
   :components ((:file "_package")
+    (:file "marker_set" :depends-on ("_package_marker_set"))
+    (:file "_package_marker_set" :depends-on ("_package"))
     (:file "mocap_frame" :depends-on ("_package_mocap_frame"))
     (:file "_package_mocap_frame" :depends-on ("_package"))
   ))

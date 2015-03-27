@@ -16,6 +16,8 @@
 
 #include "std_msgs/Header.h"
 #include "geometry_msgs/PoseArray.h"
+#include "Mocap/marker_set.h"
+#include "Mocap/marker_set.h"
 
 namespace Mocap
 {
@@ -27,6 +29,8 @@ struct mocap_frame_ {
   : header()
   , number(0)
   , body_poses()
+  , uid_markers()
+  , id_marker_sets()
   {
   }
 
@@ -34,6 +38,8 @@ struct mocap_frame_ {
   : header(_alloc)
   , number(0)
   , body_poses(_alloc)
+  , uid_markers(_alloc)
+  , id_marker_sets(_alloc)
   {
   }
 
@@ -45,6 +51,12 @@ struct mocap_frame_ {
 
   typedef  ::geometry_msgs::PoseArray_<ContainerAllocator>  _body_poses_type;
    ::geometry_msgs::PoseArray_<ContainerAllocator>  body_poses;
+
+  typedef  ::Mocap::marker_set_<ContainerAllocator>  _uid_markers_type;
+   ::Mocap::marker_set_<ContainerAllocator>  uid_markers;
+
+  typedef std::vector< ::Mocap::marker_set_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::Mocap::marker_set_<ContainerAllocator> >::other >  _id_marker_sets_type;
+  std::vector< ::Mocap::marker_set_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::Mocap::marker_set_<ContainerAllocator> >::other >  id_marker_sets;
 
 
   typedef boost::shared_ptr< ::Mocap::mocap_frame_<ContainerAllocator> > Ptr;
@@ -75,12 +87,12 @@ template<class ContainerAllocator>
 struct MD5Sum< ::Mocap::mocap_frame_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "5f772ce0d0190e13627e97251cb17009";
+    return "1a6d089936177be68712dd54f291892c";
   }
 
   static const char* value(const  ::Mocap::mocap_frame_<ContainerAllocator> &) { return value(); } 
-  static const uint64_t static_value1 = 0x5f772ce0d0190e13ULL;
-  static const uint64_t static_value2 = 0x627e97251cb17009ULL;
+  static const uint64_t static_value1 = 0x1a6d089936177be6ULL;
+  static const uint64_t static_value2 = 0x8712dd54f291892cULL;
 };
 
 template<class ContainerAllocator>
@@ -100,6 +112,10 @@ struct Definition< ::Mocap::mocap_frame_<ContainerAllocator> > {
     return "Header header\n\
 int64 number\n\
 geometry_msgs/PoseArray body_poses\n\
+# Unidenfied markers. (E.g., the single marker used for calibration).	\n\
+Mocap/marker_set uid_markers\n\
+# The set of identified markers.\n\
+Mocap/marker_set[] id_marker_sets\n\
 ================================================================================\n\
 MSG: std_msgs/Header\n\
 # Standard metadata for higher-level stamped data types.\n\
@@ -148,6 +164,9 @@ float64 y\n\
 float64 z\n\
 float64 w\n\
 \n\
+================================================================================\n\
+MSG: Mocap/marker_set\n\
+geometry_msgs/Point[] markers\n\
 ";
   }
 
@@ -171,6 +190,8 @@ template<class ContainerAllocator> struct Serializer< ::Mocap::mocap_frame_<Cont
     stream.next(m.header);
     stream.next(m.number);
     stream.next(m.body_poses);
+    stream.next(m.uid_markers);
+    stream.next(m.id_marker_sets);
   }
 
   ROS_DECLARE_ALLINONE_SERIALIZER;
@@ -196,6 +217,17 @@ s << std::endl;
     s << indent << "body_poses: ";
 s << std::endl;
     Printer< ::geometry_msgs::PoseArray_<ContainerAllocator> >::stream(s, indent + "  ", v.body_poses);
+    s << indent << "uid_markers: ";
+s << std::endl;
+    Printer< ::Mocap::marker_set_<ContainerAllocator> >::stream(s, indent + "  ", v.uid_markers);
+    s << indent << "id_marker_sets[]" << std::endl;
+    for (size_t i = 0; i < v.id_marker_sets.size(); ++i)
+    {
+      s << indent << "  id_marker_sets[" << i << "]: ";
+      s << std::endl;
+      s << indent;
+      Printer< ::Mocap::marker_set_<ContainerAllocator> >::stream(s, indent + "    ", v.id_marker_sets[i]);
+    }
   }
 };
 
