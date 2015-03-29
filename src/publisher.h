@@ -29,7 +29,6 @@
 //*************************
 #include <ros/ros.h>
 #include <Mocap/mocap_frame.h>
-#include <robot_comm/robot_comm.h>
 #include <Mocap/marker_set.h>
 
 // Misc.

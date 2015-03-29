@@ -149,8 +149,8 @@ CMAKE_SKIP_RPATH:BOOL=NO
 //Path to a program.
 CMAKE_STRIP:FILEPATH=/usr/bin/strip
 
-//No help, variable specified on the command line.
-CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=/opt/ros/fuerte/share/ros/core/rosbuild/rostoolchain.cmake
+//The CMake toolchain file
+CMAKE_TOOLCHAIN_FILE:FILEPATH=/opt/ros/fuerte/share/ros/core/rosbuild/rostoolchain.cmake
 
 //If true, cmake will use relative paths in makefiles and projects.
 CMAKE_USE_RELATIVE_PATHS:BOOL=OFF
@@ -192,10 +192,13 @@ Project_SOURCE_DIR:STATIC=/home/jiaji/TestNatNet/Mocap
 ROSPACK_EXE:FILEPATH=/opt/ros/fuerte/bin/rospack
 
 //Path to a file.
+TOOLCHAINCONFIG:FILEPATH=TOOLCHAINCONFIG-NOTFOUND
+
+//Path to a file.
 USERCONFIG:FILEPATH=USERCONFIG-NOTFOUND
 
 //Path to a file.
-_file_name:FILEPATH=/home/jiaji/TestNatNet/Mocap/src/publisher.cpp
+_file_name:FILEPATH=/home/jiaji/TestNatNet/Mocap/src/calibration_mocap.cpp
 
 
 ########################

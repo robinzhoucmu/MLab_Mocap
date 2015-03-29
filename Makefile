@@ -161,6 +161,19 @@ ROSBUILD_gensrv_lisp/fast:
 .PHONY : ROSBUILD_gensrv_lisp/fast
 
 #=============================================================================
+# Target rules for targets named calibration_mocap
+
+# Build rule for target.
+calibration_mocap: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 calibration_mocap
+.PHONY : calibration_mocap
+
+# fast build rule for target.
+calibration_mocap/fast:
+	$(MAKE) -f CMakeFiles/calibration_mocap.dir/build.make CMakeFiles/calibration_mocap.dir/build
+.PHONY : calibration_mocap/fast
+
+#=============================================================================
 # Target rules for targets named clean-test-results
 
 # Build rule for target.
@@ -330,6 +343,21 @@ tests/fast:
 .PHONY : tests/fast
 
 # target to build an object file
+src/calibration_mocap.o:
+	$(MAKE) -f CMakeFiles/calibration_mocap.dir/build.make CMakeFiles/calibration_mocap.dir/src/calibration_mocap.o
+.PHONY : src/calibration_mocap.o
+
+# target to preprocess a source file
+src/calibration_mocap.i:
+	$(MAKE) -f CMakeFiles/calibration_mocap.dir/build.make CMakeFiles/calibration_mocap.dir/src/calibration_mocap.i
+.PHONY : src/calibration_mocap.i
+
+# target to generate assembly for a file
+src/calibration_mocap.s:
+	$(MAKE) -f CMakeFiles/calibration_mocap.dir/build.make CMakeFiles/calibration_mocap.dir/src/calibration_mocap.s
+.PHONY : src/calibration_mocap.s
+
+# target to build an object file
 src/publisher.o:
 	$(MAKE) -f CMakeFiles/publisher.dir/build.make CMakeFiles/publisher.dir/src/publisher.o
 .PHONY : src/publisher.o
@@ -355,6 +383,7 @@ help:
 	@echo "... ROSBUILD_genmsg_py"
 	@echo "... ROSBUILD_gensrv_cpp"
 	@echo "... ROSBUILD_gensrv_lisp"
+	@echo "... calibration_mocap"
 	@echo "... clean-test-results"
 	@echo "... edit_cache"
 	@echo "... publisher"
@@ -370,6 +399,9 @@ help:
 	@echo "... test-results"
 	@echo "... test-results-run"
 	@echo "... tests"
+	@echo "... src/calibration_mocap.o"
+	@echo "... src/calibration_mocap.i"
+	@echo "... src/calibration_mocap.s"
 	@echo "... src/publisher.o"
 	@echo "... src/publisher.i"
 	@echo "... src/publisher.s"

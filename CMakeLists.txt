@@ -36,6 +36,8 @@ rosbuild_add_boost_directories()
 #rosbuild_link_boost(simpleexample thread program_options system)
 rosbuild_add_executable(publisher src/publisher.cpp)
 rosbuild_link_boost(publisher thread program_options system)
+
+rosbuild_add_executable(calibration_mocap src/calibration_mocap.cpp)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 
