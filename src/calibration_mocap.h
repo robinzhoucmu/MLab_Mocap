@@ -13,6 +13,7 @@
 #include "publisher.h"
 
 #include <robot_comm/robot_comm.h>
+#include <matVec/matVec.h>
 
 // Base frame: x pointing out to the vision node; 
 // Fix the robot tool frame to be always facing downward.
@@ -27,7 +28,7 @@ class MocapCalibration {
    
   // Randomly move around center with boundary specified as plus/minus delta.
   void GenRandomTrajectory(const double center[3], const double delta[3], 
-			   int n_samples);
+			   const double delta_angles[3], int n_samples);
 
   // Run the trajectory and record data to output stream/file.
   void RunTrajectory(std::ostream& out);
@@ -41,7 +42,7 @@ class MocapCalibration {
   ros::Subscriber mocap_sub;
   
   // Trajectory to execute.
-  std::vector< std::vector<double> > traj;
+  std::vector< HomogTransf > traj;
   
   // Mocap coords along the trajectory.
   std::vector< std::vector<double> > mocap_cords;
@@ -63,5 +64,9 @@ class MocapCalibration {
   void MoveRobotOneStep(int step_id);
   // Listens to mocap topic and average them after robot movement.
   void AcquireMocapData(int step_id);
- 
+
+  // Generate random pose with quaternion around [0 0 1 0], i.e., rotation about 
+  // y axis for 180 degree. and xyz around center.
+  HomogTransf GenerateRandomPose(const double center[3], const double delta[3],
+				 const double delta_angles[3]);
 };

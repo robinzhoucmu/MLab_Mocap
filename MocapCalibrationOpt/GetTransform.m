@@ -18,7 +18,7 @@ H = Pm * Pr';
 [U S V] = svd(H);
 R = V * U';
 
-d = det(R)
+d = det(R);
 %print(d)
 
 t = avgPr - R * avgPm;
