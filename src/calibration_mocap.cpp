@@ -3,16 +3,25 @@
 #include <assert.h>
 #include <math.h>
 
-const double kCenter[3] = {475, 0, 450};
-const double kDelta[3] = {100, 150, 50};
-const double angle_range = 10;
+// Robot Moves randomly around kCenter.
+const double kCenter[3] = {500, 0, 450};
+// kCenter plus/minus kDelta as boundary.
+const double kDelta[3] = {75, 125, 50};
+
+// Base frame: x pointing out to the vision node; 
+// Have the robot tool frame mostly facing downward.
+// Correspond to rotating the base frame about y axis for 180 degree.
+const double kCenterAngles[3] = {0, M_PI, 0};
+const double angle_range = 15;
 const double kDeltaAngles[3] = {angle_range * M_PI / 180.0, 
 				angle_range * M_PI / 180.0, 
 				angle_range * M_PI / 180.0};
+
 // Global mocap coords.
 double global_mocap_cord[3];
 // Global boolean to indicate whether the mocap is successfully captured.
 bool flag_mocap_captured;
+
 void Callback(const Mocap::mocap_frame& msg){
   global_mocap_cord[0] = global_mocap_cord[1] = global_mocap_cord[2] = -1;
   // Check the number of unidentified markers.
@@ -50,29 +59,14 @@ void MocapCalibration::GenRandomTrajectory(const double center[3],
 					   const double delta[3], 
 					   const double delta_angles[3],
 					   int n_samples) {
-  const int kMaxR = 1000;
   num_samples = n_samples;
   traj.clear();
   for (int i = 0; i < num_samples; ++i) {
-    /*
-    std::vector<double> cords(3);
-    for (int j = 0; j < 3; ++j) {
-      // Generate random number in [-1,1];
-      const double r = 2 * (double(rand() % kMaxR) / kMaxR - 0.5);
-      cords[j] = center[j] + r * delta[j];
-    }
-    */
     const HomogTransf rand_pose = GenerateRandomPose(center, delta, delta_angles);
-    //traj.push_back(cords);
     traj.push_back(rand_pose);
   } 
   // Check for traj.
   for (int i = 0; i < num_samples; ++i) {
-    /*
-    for (int j = 0; j < 3; ++j) {
-      std::cout << traj[i][j] << ",";
-    }
-    */
     std::cout << i << "th pose " << std::endl;
     std::cout << traj[i];
     std::cout << std::endl;
@@ -82,17 +76,20 @@ void MocapCalibration::GenRandomTrajectory(const double center[3],
 HomogTransf MocapCalibration::GenerateRandomPose(const double center[3], const double delta[3],
 						 const double delta_angles[3]) {
   const int kMaxR = 1000;
+
   // Random xyz around center.
   Vec trans(3);
+
   // Random xyz rotation angles.
-  const double center_angles[3] = {0, M_PI, 0};
   double rand_angles[3];
+
   for (int j = 0; j < 3; ++j) {
     // Generate random number in [-1,1];
     const double r = 2 * (double(rand() % kMaxR) / kMaxR - 0.5);
     trans[j] = center[j] + r * delta[j];
-    rand_angles[j] = center_angles[j] + r * delta_angles[j];
-  }  
+    rand_angles[j] = kCenterAngles[j] + r * delta_angles[j];
+  }
+  
   // Generate corresponding random rotation matrix.
   RotMat rotMX;
   rotMX.rotX(rand_angles[0]);
@@ -101,9 +98,11 @@ HomogTransf MocapCalibration::GenerateRandomPose(const double center[3], const d
   RotMat rotMZ;
   rotMZ.rotZ(rand_angles[2]);
   RotMat rotM = rotMZ * rotMY * rotMX; 
+
   // Set random Homogenous Transformation.
   HomogTransf rand_pose(rotM, trans);
-  std::cout << rand_pose.getQuaternion() << std::endl;
+  //std::cout << rand_pose.getQuaternion() << std::endl;
+
   return rand_pose;
 }
 
@@ -119,39 +118,38 @@ void MocapCalibration::RunTrajectory(std::ostream& out) {
     
     // Acquire Mocap Data.
     AcquireMocapData(i);
-    
-    // Write to output stream.
-    /*
-    for (int j = 0; j < 3; ++j) {
-      out << traj[i][j] << ","; 
-    }
-    */
-    out << traj[i] << std::endl;
-    for (int j = 0; j < 2; ++j) {
-      out << mocap_cords[i][j] << ",";
-    }
-    out << mocap_cords[i][2] << std::endl;
+  
+    // Output to disk/stdout.
+    OutputPoseAndMocap(i, out);
   }
+}
+
+void MocapCalibration::OutputPoseAndMocap(int step_id, std::ostream& out) {
+  // Output the Rotation Matrix.
+  const RotMat rotM = traj[step_id].getRotation();
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      out << rotM.v[i][j] << " ";
+    }
+    out << std::endl;
+  }
+
+  // Output the Translation.
+  const Vec trans = traj[step_id].getTranslation();
+  for (int i = 0; i < 3; ++i) {
+    out << trans[i] << " ";
+  }
+  out << std::endl;
+ 
+  // Output the Mocap data.
+  for (int i = 0; i < 3; ++i) {
+    out << mocap_cords[step_id][i] << " ";
+  }
+  out << std::endl;
 }
 
 void MocapCalibration::MoveRobotOneStep(int step_id) {
   // Move the robot to the next trajectory point.
-  /*
-  double cart[7];
-  // Set x,y,z from corresponding trajectory point coordinate.
-  for (int j = 0; j < 3; ++j) {
-    cart[j] = traj[step_id][j];
-  }
-  // Set quaternion(fixed).
-  for (int j = 0; j < 4; ++j) {
-    cart[3+j] = kQuaternion[j];
-  }
-  for (int i = 0; i < 7; ++i) {
-    std::cout << cart[i] << ",";
-  }
-  std::cout << std::endl;
-  */
-  std::cout << traj[step_id];
   robot->SetCartesian(traj[step_id]);
   // Wait until robot reaches goal.
   while(robot->IsMoving());

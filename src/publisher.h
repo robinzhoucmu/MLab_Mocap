@@ -36,7 +36,7 @@
 #include <boost/program_options.hpp>
 #include <time.h>
 
-const int kPublishFreq = 60;
+//const int kPublishFreq = 60;
 
 class Globals {
  public: 
@@ -47,6 +47,9 @@ class Globals {
   // State of the main() thread.
   static bool run;
   
+  // Publishing frequency
+  static int kPublishFreq;
+  
   // Initialize the sockets arguments.
   static void ReadOpts(int argc, char* argv[]) {
     namespace po = boost::program_options;
@@ -54,8 +57,9 @@ class Globals {
     desc.add_options()
       ("help", "Display help message")
       ("local-addr,l", po::value<std::string>(), "Local IPv4 address")
-      ("server-addr,s", po::value<std::string>(), "Server IPv4 address");
-   
+      ("server-addr,s", po::value<std::string>(), "Server IPv4 address")
+      ("pub-freq,f", po::value<int>(), "Publishing Frequency(<=100Hz)");
+    
     po::variables_map vm;
     po::store(po::parse_command_line(argc,argv,desc), vm);
    
@@ -67,6 +71,11 @@ class Globals {
     
     Globals::localAddress = inet_addr( vm["local-addr"].as<std::string>().c_str() );
     Globals::serverAddress = inet_addr( vm["server-addr"].as<std::string>().c_str() );
+    if (!vm["pub-freq"].empty()) {
+      Globals::kPublishFreq = vm["pub-freq"].as<int>();
+    } else {
+      Globals::kPublishFreq = 60;
+    }
   }
 
   // End the program gracefully.
@@ -81,6 +90,7 @@ class Globals {
 uint32_t Globals::localAddress = 0;
 uint32_t Globals::serverAddress = 0;
 bool Globals::run = false;
+int Globals::kPublishFreq = 60;
 
 // Mocap Publisher. 
 class MocapPublisher {

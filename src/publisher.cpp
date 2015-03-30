@@ -3,7 +3,7 @@
 MocapPublisher::MocapPublisher(ros::NodeHandle *n) {
   nodeHandle = n;
   // Set as default frequency.
-  SetPublishFrequency(kPublishFreq);
+  SetPublishFrequency(Globals::kPublishFreq);
 }
 
 void MocapPublisher::SetPublishFrequency(int _pub_freq_hz) {

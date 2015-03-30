@@ -15,11 +15,6 @@
 #include <robot_comm/robot_comm.h>
 #include <matVec/matVec.h>
 
-// Base frame: x pointing out to the vision node; 
-// Fix the robot tool frame to be always facing downward.
-// Correspond to rotating the base frame about y axis for 180 degree.
-const double kQuaternion[4] = {0,0,1,0};
-
 class MocapCalibration {
  public:
   MocapCalibration();
@@ -48,13 +43,13 @@ class MocapCalibration {
   std::vector< std::vector<double> > mocap_cords;
  
   // Cusion time between robot finishes moving somewhere and mocap start logging.
-  static const double k_cusion_time = 0.5;
+  static const double k_cusion_time = 1.0;
   
   // Time segment that the robot reads data from Mocap.
   static const double k_read_period = 0.1;
   
   // Total number of mocap frame to capture for averaging.
-  static const int k_num_collections = 10;
+  static const int k_num_collections = 20;
 
   // Initialize robot transformations. 
   // 1) Set tool frame to be identical to the default tool phalange center. 
@@ -64,6 +59,8 @@ class MocapCalibration {
   void MoveRobotOneStep(int step_id);
   // Listens to mocap topic and average them after robot movement.
   void AcquireMocapData(int step_id);
+
+  void OutputPoseAndMocap(int step_id, std::ostream& out);
 
   // Generate random pose with quaternion around [0 0 1 0], i.e., rotation about 
   // y axis for 180 degree. and xyz around center.
