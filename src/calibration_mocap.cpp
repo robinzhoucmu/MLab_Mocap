@@ -3,10 +3,11 @@
 #include <assert.h>
 #include <math.h>
 
+// Hand chosen values (in robot base frame) that avoid collision.
 // Robot Moves randomly around kCenter.
 const double kCenter[3] = {500, 0, 400};
 // kCenter plus/minus kDelta as boundary.
-const double kDelta[3] = {100, 150, 100};
+const double kDelta[3] = {125, 200, 120};
 
 // Base frame: x pointing out to the vision node; 
 // Have the robot tool frame mostly facing downward.
@@ -53,6 +54,10 @@ void MocapCalibration::InitRobotTransformation() {
   robot->SetTool(0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
   // Set identical between work object frame and robot base frame.
   robot->SetWorkObject(0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+  // Set relatively high speed.
+  const double tcp = 100;
+  const double ori = 10;
+  robot->SetSpeed(tcp, ori);
 }
 
 void MocapCalibration::GenRandomTrajectory(const double center[3], 
@@ -126,6 +131,9 @@ void MocapCalibration::RunTrajectory(std::ostream& out) {
       OutputPoseAndMocap(i, out);
     }
   }
+  // Set back to slow speed.
+  robot->SetSpeed(20.0, 10.0);
+
 }
 
 void MocapCalibration::OutputPoseAndMocap(int step_id, std::ostream& out) {
@@ -197,7 +205,7 @@ int main(int argc, char* argv[]) {
   srand (time(NULL));
   ros::init(argc, argv, "MocapCalibration");
   MocapCalibration mocap_cali;
-  const int kNumRandSamples = 100;
+  const int kNumRandSamples = 200;
   mocap_cali.GenRandomTrajectory(kCenter, kDelta, kDeltaAngles, kNumRandSamples);
   
   std::ofstream fout;
