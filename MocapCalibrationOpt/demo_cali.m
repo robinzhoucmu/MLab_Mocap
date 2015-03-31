@@ -1,6 +1,19 @@
+close all;
 % Give initialization from physical measurement.
-v0 = [0; 0; -133.68];
+v0 = [0; 0; 200];
 file_name = '../mocap_log.txt';
-
 [RotMats, ToolPts, MocapPts] = ReadFromRosOutput(file_name);
-[R_est t_est v_est] = AlterDescent(ToolPts, MocapPts, RotMats, v0)
+N = size(ToolPts, 2);
+% Use first 80% for fitting.
+ind = ceil(N * 0.8);
+[R_est t_est v_est err_est] = ...
+    AlterDescent(ToolPts(:,1:ind), MocapPts(:,1:ind), RotMats(1:ind), v0);
+% Check for validation error.
+meanErr = ValidFitting(ToolPts(:,ind+1:N), MocapPts(:,ind+1:N), RotMats(ind+1:N), R_est, t_est, v_est)
+% Use all data to fit final result and output to disk.
+[R_final t_final v_final err_final] = AlterDescent(ToolPts, MocapPts, RotMats, v_est)
+
+output_file_name = '../matlab_cali_result.txt';
+quat = qGetQ(R_final);
+T = [t_final; quat]';
+dlmwrite(output_file_name, T, ' ');

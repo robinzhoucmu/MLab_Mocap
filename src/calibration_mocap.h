@@ -43,13 +43,15 @@ class MocapCalibration {
   std::vector< std::vector<double> > mocap_cords;
  
   // Cusion time between robot finishes moving somewhere and mocap start logging.
-  static const double k_cusion_time = 1.0;
+  static const double k_cusion_time = 0.5;
   
   // Time segment that the robot reads data from Mocap.
   static const double k_read_period = 0.1;
   
   // Total number of mocap frame to capture for averaging.
-  static const int k_num_collections = 20;
+  static const int k_num_collections = 10;
+
+  static const double k_max_wait_time = 4.0;
 
   // Initialize robot transformations. 
   // 1) Set tool frame to be identical to the default tool phalange center. 
@@ -57,8 +59,13 @@ class MocapCalibration {
   void InitRobotTransformation();
 
   void MoveRobotOneStep(int step_id);
+  
   // Listens to mocap topic and average them after robot movement.
-  void AcquireMocapData(int step_id);
+  // If succesfully heard multiple times(k_num_collection), 
+  // proceed moving and return true.
+  // Otherwise, if robot can't heard from mocap for k_max_wait_time second, 
+  // moves on and return false.
+  bool AcquireMocapData(int step_id);
 
   void OutputPoseAndMocap(int step_id, std::ostream& out);
 

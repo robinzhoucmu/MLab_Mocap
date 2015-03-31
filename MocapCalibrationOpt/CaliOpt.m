@@ -8,16 +8,6 @@ N = size(Pc,2);
 % Alterating procedure.
 maxIter = 40;
 iter = 0;
-% while iter < maxIter
-%     iter = iter + 1;
-%     % Marker point in base frame by shifting the tool center by v0. 
-%     Pr = bsxfun(@plus, Pc, v);
-%     [R t] = GetTransform(Pm, Pr)
-%     % Represent mocap points in robot base under current fitted transformation.
-%     Q = bsxfun(@plus, R * Pm, t);
-%     v = AdjustVecObj(Pc, Q)
-% end
-
 diff = vm - v0;
 minError = 1e+9;
 Pr = zeros(3, N);

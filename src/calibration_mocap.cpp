@@ -4,15 +4,15 @@
 #include <math.h>
 
 // Robot Moves randomly around kCenter.
-const double kCenter[3] = {500, 0, 450};
+const double kCenter[3] = {500, 0, 400};
 // kCenter plus/minus kDelta as boundary.
-const double kDelta[3] = {75, 125, 50};
+const double kDelta[3] = {100, 150, 100};
 
 // Base frame: x pointing out to the vision node; 
 // Have the robot tool frame mostly facing downward.
 // Correspond to rotating the base frame about y axis for 180 degree.
 const double kCenterAngles[3] = {0, M_PI, 0};
-const double angle_range = 15;
+const double angle_range = 25;
 const double kDeltaAngles[3] = {angle_range * M_PI / 180.0, 
 				angle_range * M_PI / 180.0, 
 				angle_range * M_PI / 180.0};
@@ -61,15 +61,18 @@ void MocapCalibration::GenRandomTrajectory(const double center[3],
 					   int n_samples) {
   num_samples = n_samples;
   traj.clear();
-  for (int i = 0; i < num_samples; ++i) {
+  int counter = 0;
+  while (counter < num_samples) {
     const HomogTransf rand_pose = GenerateRandomPose(center, delta, delta_angles);
-    traj.push_back(rand_pose);
-  } 
-  // Check for traj.
-  for (int i = 0; i < num_samples; ++i) {
-    std::cout << i << "th pose " << std::endl;
-    std::cout << traj[i];
-    std::cout << std::endl;
+    // Check joint limit.
+    double dummy_joints[6];
+    if (robot->GetIK(rand_pose, dummy_joints)) {
+      traj.push_back(rand_pose);
+      std::cout << counter << "th pose " << std::endl;
+      std::cout << traj[counter];
+      std::cout << std::endl;
+      counter++;
+    }
   } 
 }
 
@@ -117,10 +120,11 @@ void MocapCalibration::RunTrajectory(std::ostream& out) {
     ros::Duration(k_cusion_time).sleep();
     
     // Acquire Mocap Data.
-    AcquireMocapData(i);
-  
-    // Output to disk/stdout.
-    OutputPoseAndMocap(i, out);
+    if (AcquireMocapData(i)) {
+      std::cout << "Outputing " << i << "th way point" << std::endl;
+      // Output to disk/stdout.
+      OutputPoseAndMocap(i, out);
+    }
   }
 }
 
@@ -155,34 +159,45 @@ void MocapCalibration::MoveRobotOneStep(int step_id) {
   while(robot->IsMoving());
 }
 
-void MocapCalibration::AcquireMocapData(int step_id) {
+bool MocapCalibration::AcquireMocapData(int step_id) {
     // Start acquiring mocap data and average them.
     int num_received_frames = 0; 
+    bool flag_response = true;
     std::vector<double> avg_mocap_cords(3,0);
     const int freqHz = int (1.0 / k_read_period);
     ros::Rate r(freqHz);
-    while (num_received_frames < k_num_collections) {
+    double last_secs = ros::Time::now().toSec();   
+    while (num_received_frames < k_num_collections && flag_response) {
       ros::spinOnce();
+      double cur_secs = ros::Time::now().toSec();
       if (flag_mocap_captured) {
+	flag_response = true;
+	// Update last_secs.
+	last_secs = cur_secs;
 	num_received_frames++;
 	for (int i = 0; i < 3; ++i) {
 	  avg_mocap_cords[i] += global_mocap_cord[i];
 	}
       }
       r.sleep();
+      if (cur_secs - last_secs > k_max_wait_time) {
+	flag_response = false;
+      }
     }
     for (int i = 0; i < 3; ++i) {
-      avg_mocap_cords[i] = avg_mocap_cords[i] / k_num_collections; 
+      avg_mocap_cords[i] = avg_mocap_cords[i] / num_received_frames; 
     }
     // Store into corresponding position in mocap_cords.
     mocap_cords.push_back(avg_mocap_cords);
+    
+    return flag_response; 
 }
 
 int main(int argc, char* argv[]) {
   srand (time(NULL));
   ros::init(argc, argv, "MocapCalibration");
   MocapCalibration mocap_cali;
-  const int kNumRandSamples = 10;
+  const int kNumRandSamples = 100;
   mocap_cali.GenRandomTrajectory(kCenter, kDelta, kDeltaAngles, kNumRandSamples);
   
   std::ofstream fout;
