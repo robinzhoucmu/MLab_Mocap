@@ -6,6 +6,7 @@
 % Output:
 % R, t: The rotation and translation that gets Pm represented in the 
 % robot frame. 
+% See reference: Least-Squares Fitting of Two 3d Point Sets
 function [R t] = GetTransform(Pm, Pr)
 % Mean subtraction.
 avgPm = mean(Pm, 2);

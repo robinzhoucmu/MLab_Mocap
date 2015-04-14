@@ -6,6 +6,8 @@
  * A separate Matlab module will perform the numerical optimization for 
  * mocap calibration.
  */
+#ifndef MOCAP_CALIBRATION_H
+#define MOCAP_CALIBRATION_H
 
 #include <iostream>
 #include <fstream>
@@ -74,3 +76,6 @@ class MocapCalibration {
   HomogTransf GenerateRandomPose(const double center[3], const double delta[3],
 				 const double delta_angles[3]);
 };
+
+
+#endif

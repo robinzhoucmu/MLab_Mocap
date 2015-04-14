@@ -26,7 +26,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #uncomment if you have defined messages
 rosbuild_genmsg()
 #uncomment if you have defined services
-#rosbuild_gensrv()
+rosbuild_gensrv()
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
@@ -38,6 +38,7 @@ rosbuild_add_executable(publisher src/publisher.cpp)
 rosbuild_link_boost(publisher thread program_options system)
 
 rosbuild_add_executable(calibration_mocap src/calibration_mocap.cpp)
+rosbuild_add_executable(mocap_comm src/mocap_comm.cpp)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 

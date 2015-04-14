@@ -161,6 +161,19 @@ ROSBUILD_gensrv_lisp/fast:
 .PHONY : ROSBUILD_gensrv_lisp/fast
 
 #=============================================================================
+# Target rules for targets named ROSBUILD_gensrv_py
+
+# Build rule for target.
+ROSBUILD_gensrv_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ROSBUILD_gensrv_py
+.PHONY : ROSBUILD_gensrv_py
+
+# fast build rule for target.
+ROSBUILD_gensrv_py/fast:
+	$(MAKE) -f CMakeFiles/ROSBUILD_gensrv_py.dir/build.make CMakeFiles/ROSBUILD_gensrv_py.dir/build
+.PHONY : ROSBUILD_gensrv_py/fast
+
+#=============================================================================
 # Target rules for targets named calibration_mocap
 
 # Build rule for target.
@@ -185,6 +198,19 @@ clean-test-results: cmake_check_build_system
 clean-test-results/fast:
 	$(MAKE) -f CMakeFiles/clean-test-results.dir/build.make CMakeFiles/clean-test-results.dir/build
 .PHONY : clean-test-results/fast
+
+#=============================================================================
+# Target rules for targets named mocap_comm
+
+# Build rule for target.
+mocap_comm: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 mocap_comm
+.PHONY : mocap_comm
+
+# fast build rule for target.
+mocap_comm/fast:
+	$(MAKE) -f CMakeFiles/mocap_comm.dir/build.make CMakeFiles/mocap_comm.dir/build
+.PHONY : mocap_comm/fast
 
 #=============================================================================
 # Target rules for targets named publisher
@@ -278,6 +304,19 @@ rospack_gensrv/fast:
 .PHONY : rospack_gensrv/fast
 
 #=============================================================================
+# Target rules for targets named rospack_gensrv_all
+
+# Build rule for target.
+rospack_gensrv_all: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rospack_gensrv_all
+.PHONY : rospack_gensrv_all
+
+# fast build rule for target.
+rospack_gensrv_all/fast:
+	$(MAKE) -f CMakeFiles/rospack_gensrv_all.dir/build.make CMakeFiles/rospack_gensrv_all.dir/build
+.PHONY : rospack_gensrv_all/fast
+
+#=============================================================================
 # Target rules for targets named test
 
 # Build rule for target.
@@ -358,6 +397,21 @@ src/calibration_mocap.s:
 .PHONY : src/calibration_mocap.s
 
 # target to build an object file
+src/mocap_comm.o:
+	$(MAKE) -f CMakeFiles/mocap_comm.dir/build.make CMakeFiles/mocap_comm.dir/src/mocap_comm.o
+.PHONY : src/mocap_comm.o
+
+# target to preprocess a source file
+src/mocap_comm.i:
+	$(MAKE) -f CMakeFiles/mocap_comm.dir/build.make CMakeFiles/mocap_comm.dir/src/mocap_comm.i
+.PHONY : src/mocap_comm.i
+
+# target to generate assembly for a file
+src/mocap_comm.s:
+	$(MAKE) -f CMakeFiles/mocap_comm.dir/build.make CMakeFiles/mocap_comm.dir/src/mocap_comm.s
+.PHONY : src/mocap_comm.s
+
+# target to build an object file
 src/publisher.o:
 	$(MAKE) -f CMakeFiles/publisher.dir/build.make CMakeFiles/publisher.dir/src/publisher.o
 .PHONY : src/publisher.o
@@ -383,9 +437,11 @@ help:
 	@echo "... ROSBUILD_genmsg_py"
 	@echo "... ROSBUILD_gensrv_cpp"
 	@echo "... ROSBUILD_gensrv_lisp"
+	@echo "... ROSBUILD_gensrv_py"
 	@echo "... calibration_mocap"
 	@echo "... clean-test-results"
 	@echo "... edit_cache"
+	@echo "... mocap_comm"
 	@echo "... publisher"
 	@echo "... rebuild_cache"
 	@echo "... rosbuild_precompile"
@@ -394,6 +450,7 @@ help:
 	@echo "... rospack_genmsg_all"
 	@echo "... rospack_genmsg_libexe"
 	@echo "... rospack_gensrv"
+	@echo "... rospack_gensrv_all"
 	@echo "... test"
 	@echo "... test-future"
 	@echo "... test-results"
@@ -402,6 +459,9 @@ help:
 	@echo "... src/calibration_mocap.o"
 	@echo "... src/calibration_mocap.i"
 	@echo "... src/calibration_mocap.s"
+	@echo "... src/mocap_comm.o"
+	@echo "... src/mocap_comm.i"
+	@echo "... src/mocap_comm.s"
 	@echo "... src/publisher.o"
 	@echo "... src/publisher.i"
 	@echo "... src/publisher.s"

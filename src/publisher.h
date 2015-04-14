@@ -30,6 +30,7 @@
 #include <ros/ros.h>
 #include <Mocap/mocap_frame.h>
 #include <Mocap/marker_set.h>
+#include "mocap_comm.h"
 
 // Misc.
 //****************************
@@ -97,7 +98,7 @@ class MocapPublisher {
  public:
   // Initialize ROS, socket stuffs and publish frequency(default).
   MocapPublisher(ros::NodeHandle *n);
-  
+  ~MocapPublisher();
   void SetPublishFrequency(int pub_freq_hz);
   // Establish socket communication to the NatNet Windows Server.
   
@@ -106,6 +107,12 @@ class MocapPublisher {
   
   void PublishToTopic();
  
+  void AdvertiseServices();
+
+  /*
+  bool SetObjTransformation(Mocap::mocap_SetObjTransformation::Request& req,
+			    Mocap::mocap_SetObjTransformation::Response& res);
+  */
  private:
   // Create frame packet listener to listen to the server.
   void CreateListener();
@@ -113,6 +120,25 @@ class MocapPublisher {
   // Parse the NatNet MocapFrame data structure and store in a ros message.
   void ExtractPoseMsg(const MocapFrame& mframe, Mocap::mocap_frame* msg);
   
+  // Service Callbacks.
+  // Extract the mocap information(markers, rigid bodies) at this time frame.
+  bool GetMocapFrame(Mocap::mocap_GetMocapFrame::Request& req, 
+		     Mocap::mocap_GetMocapFrame::Response& res);
+  
+  bool GetMocapTransformation(Mocap::mocap_GetMocapTransformation::Request& req,
+			      Mocap::mocap_GetMocapTransformation::Response& res); 
+
+  // Set the transformation from robot base to the mocap frame.
+  bool SetMocapTransformation(Mocap::mocap_SetMocapTransformation::Request& req, 
+			      Mocap::mocap_SetMocapTransformation::Response& res);
+
+  void setMocapTransformation(double pose[7]);  
+
+  // Helper function to transform points in the mocap frame to robot base frame
+  // given tf_mocap.
+  void transformPoint(geometry_msgs::Point* pt);
+  void transformPose(geometry_msgs::Pose* pose);
+
   // Publishing frequency to the Mocap Topic.
   int pub_freq_hz;
   
@@ -124,5 +150,17 @@ class MocapPublisher {
 
   // Ros node.
   ros::NodeHandle *nodeHandle;
+
+  // Handles to ROS stuff.
+  ros::ServiceServer handle_mocap_GetMocapFrame;
+  ros::ServiceServer handle_mocap_GetMocapTransformation;
+  
+  ros::ServiceServer handle_mocap_SetMocapTransformation;
+  
+  HomogTransf tf_mocap; 
+  
+  // For GetMocapFrame service call: if we wait for more than k_max_wait time,
+  // will return false.
+  static const double k_max_wait = 2.0;
 
 };
